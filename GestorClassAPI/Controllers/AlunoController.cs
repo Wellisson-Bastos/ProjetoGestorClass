@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GestorClassAPI.Models.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -7,8 +8,15 @@ using System.Web.Http;
 
 namespace GestorClassAPI.Controllers
 {
-    public class ValuesController : ApiController
+    public class AlunoController : ApiController
     {
+        IServicoAluno lServico;
+
+        public AlunoController(IServicoAluno pServico) 
+        {
+            lServico = pServico;
+        }
+
         // GET api/values
         public IEnumerable<string> Get()
         {
