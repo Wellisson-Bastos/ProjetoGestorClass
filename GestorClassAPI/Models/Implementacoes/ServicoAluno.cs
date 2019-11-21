@@ -1,11 +1,12 @@
 ﻿using GestorClass.Dominio;
 using GestorClassAPI.Models.DTO;
 using GestorClassAPI.Models.Interfaces;
-using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 
-namespace GestorClassAPI.Models.Entities
+namespace GestorClassAPI.Models.Implementacoes
 {
     public class ServicoAluno : IServicoAluno
     {
@@ -16,7 +17,7 @@ namespace GestorClassAPI.Models.Entities
             lContext = pContext;
         }
 
-        public void Adicionar(DTOAluno pAluno)
+        public async Task<DTOAluno> Adicionar(DTOAluno pAluno)
         {
             Aluno lALU = new Aluno()
             {
@@ -26,10 +27,14 @@ namespace GestorClassAPI.Models.Entities
             };
 
             lContext.Alunoes.Add(lALU);
-            lContext.SaveChanges();
+            await lContext.SaveChangesAsync();
+
+            pAluno.Id = lALU.Id;
+
+            return pAluno;
         }
 
-        public void Atualizar(DTOAluno pAluno)
+        public async Task<DTOAluno> Atualizar(DTOAluno pAluno)
         {
             Aluno lALU = lContext.Alunoes.FirstOrDefault(p => p.Id == pAluno.Id);
 
@@ -37,42 +42,41 @@ namespace GestorClassAPI.Models.Entities
             lALU.Email = pAluno.Email;
             lALU.Data_Nascimento = pAluno.Data_Nascimento;
 
-            lContext.SaveChanges();
+            await lContext.SaveChangesAsync();
+
+            return pAluno;
         }
 
-        public void Excluir(int Id)
+        public async Task Excluir(int Id)
         {
             Aluno lALU = lContext.Alunoes.FirstOrDefault(p => p.Id == Id);
 
             lContext.Alunoes.Remove(lALU);
-            lContext.SaveChanges();
+            await lContext.SaveChangesAsync();
         }
 
-        public DTOAluno ObterPorCodigo(int Id)
+        public async Task<DTOAluno> ObterPorCodigo(int Id)
         {
-            DTOAluno lRetorno = (from ALU in lContext.Alunoes
-                                 where ALU.Id == Id
-                                 select new DTOAluno
-                                 {
-                                     Nome = ALU.Nome,
-                                     Email = ALU.Email,
-                                     Data_Nascimento = ALU.Data_Nascimento
-                                 }).FirstOrDefault();
+            return await (from ALU in lContext.Alunoes
+                          where ALU.Id == Id
+                          select new DTOAluno
+                          {
+                              Nome = ALU.Nome,
+                              Email = ALU.Email,
+                              Data_Nascimento = ALU.Data_Nascimento
+                          }).FirstOrDefaultAsync();
 
-            return lRetorno;
         }
 
-        public List<DTOAluno> ObterTodos()
+        public async Task<List<DTOAluno>> ObterTodos()
         {
-            List<DTOAluno> lRetorno = lContext.Alunoes
+            return await lContext.Alunoes
                 .Select(p => new DTOAluno
                 {
                     Nome = p.Nome,
                     Email = p.Email,
                     Data_Nascimento = p.Data_Nascimento
-                }).ToList();
-
-            return lRetorno;
+                }).ToListAsync();
         }
     }
 }

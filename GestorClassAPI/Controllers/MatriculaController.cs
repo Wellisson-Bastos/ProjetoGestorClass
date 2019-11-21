@@ -2,6 +2,7 @@
 using GestorClassAPI.Models.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -18,14 +19,12 @@ namespace GestorClassAPI.Controllers
 
         [HttpGet]
         [ResponseType(typeof(List<DTOMatricula>))]
-        [Route("api/matricula/{id}")]
-        public IHttpActionResult Get(int id)
+        [Route("api/matricula/obtertodas/{id}")]
+        public async Task<IHttpActionResult> ObterTodos(int id)
         {
             try
             {
-                var lRetorno = fServico.ObterTodos(id); 
-
-                return Ok(lRetorno);
+                return Ok(await fServico.ObterTodos(id)); 
             }
             catch (Exception Ex)
             {
@@ -35,12 +34,12 @@ namespace GestorClassAPI.Controllers
 
         [HttpGet]
         [ResponseType(typeof(DTOMatricula))]
-        [Route("api/matricula/get_by_id/{id}")]
-        public IHttpActionResult GetById(int id)
+        [Route("api/matricula/{id}")]
+        public async Task<IHttpActionResult> ObterPorCodigo(int id)
         {
             try
             {
-                var lRetorno = fServico.ObterPorCodigo(id);
+                var lRetorno = await fServico.ObterPorCodigo(id);
 
                 if (lRetorno != null)
                 {
@@ -59,7 +58,8 @@ namespace GestorClassAPI.Controllers
         }
 
         [HttpPost]
-        public IHttpActionResult Post([FromBody]DTOMatricula pDTO)
+        [ResponseType(typeof(DTOMatricula))]
+        public async Task<IHttpActionResult> Adicionar([FromBody]DTOMatricula pDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -68,9 +68,7 @@ namespace GestorClassAPI.Controllers
 
             try
             {
-                fServico.Adicionar(pDTO);
-
-                return Ok();
+                return Ok(await fServico.Adicionar(pDTO));
             }
             catch (ApplicationException Ex)
             {
@@ -79,7 +77,8 @@ namespace GestorClassAPI.Controllers
         }
 
         [HttpPut]
-        public IHttpActionResult Put([FromBody]DTOMatricula pDTO)
+        [ResponseType(typeof(DTOMatricula))]
+        public async Task<IHttpActionResult> Atualizar([FromBody]DTOMatricula pDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -88,9 +87,7 @@ namespace GestorClassAPI.Controllers
 
             try
             {
-                fServico.Atualizar(pDTO);
-
-                return Ok();
+                return Ok(await fServico.Atualizar(pDTO));
             }
             catch (ApplicationException Ex)
             {
@@ -99,11 +96,12 @@ namespace GestorClassAPI.Controllers
         }
 
         [HttpDelete]
-        public IHttpActionResult Delete(int id)
+        [Route("api/matricula/{id}")]
+        public async Task<IHttpActionResult> Excluir(int id)
         {
             try
             {
-                fServico.Excluir(id);
+                await fServico.Excluir(id);
 
                 return Ok();
             }

@@ -1,47 +1,114 @@
-﻿using GestorClassAPI.Models.Interfaces;
+﻿using GestorClassAPI.Models.DTO;
+using GestorClassAPI.Models.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace GestorClassAPI.Controllers
 {
     public class AlunoController : ApiController
     {
-        IServicoAluno lServico;
+        private readonly IServicoAluno fServico;
 
-        public AlunoController(IServicoAluno pServico) 
+        public AlunoController(IServicoAluno pServico)
         {
-            lServico = pServico;
+            fServico = pServico;
         }
 
-        // GET api/values
-        public IEnumerable<string> Get()
+        [HttpGet]
+        [ResponseType(typeof(List<DTOAluno>))]
+        [Route("api/aluno/obtertodos")]
+        public async Task<IHttpActionResult> ObterTodos(int id)
         {
-            return new string[] { "value1", "value2" };
+            try
+            {
+                return Ok(await fServico.ObterTodos());
+            }
+            catch (Exception Ex)
+            {
+                return InternalServerError(Ex);
+            }
         }
 
-        // GET api/values/5
-        public string Get(int id)
+        [HttpGet]
+        [ResponseType(typeof(DTOAluno))]
+        [Route("api/aluno/{id}")]
+        public async Task<IHttpActionResult> ObterPorCodigo(int id)
         {
-            return "value";
+            try
+            {
+                var lRetorno = await fServico.ObterPorCodigo(id);
+
+                if (lRetorno != null)
+                {
+                    return Ok(lRetorno);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception Ex)
+            {
+                return InternalServerError(Ex);
+            }
+
         }
 
-        // POST api/values
-        public void Post([FromBody]string value)
+        [HttpPost]
+        [ResponseType(typeof(DTOAluno))]
+        public async Task<IHttpActionResult> Adicionar([FromBody]DTOAluno pDTO)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                return Ok(await fServico.Adicionar(pDTO));
+            }
+            catch (ApplicationException Ex)
+            {
+                return InternalServerError(Ex);
+            }
         }
 
-        // PUT api/values/5
-        public void Put(int id, [FromBody]string value)
+        [HttpPut]
+        [ResponseType(typeof(DTOAluno))]
+        public async Task<IHttpActionResult> Atualizar([FromBody]DTOAluno pDTO)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                return Ok(await fServico.Atualizar(pDTO));
+            }
+            catch (ApplicationException Ex)
+            {
+                return InternalServerError(Ex);
+            }
         }
 
-        // DELETE api/values/5
-        public void Delete(int id)
+        [HttpDelete]
+        [Route("api/aluno/{id}")]
+        public async Task<IHttpActionResult> Excluir(int id)
         {
+            try
+            {
+                await fServico.Excluir(id);
+
+                return Ok();
+            }
+            catch (ApplicationException Ex)
+            {
+                return InternalServerError(Ex);
+            }
         }
     }
 }

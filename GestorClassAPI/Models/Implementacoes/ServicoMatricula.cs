@@ -2,6 +2,7 @@
 using GestorClassAPI.Models.DTO;
 using GestorClassAPI.Models.Interfaces;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,7 +17,7 @@ namespace GestorClassAPI.Models.Implementacoes
             lContext = pContext;
         }
 
-        public void Adicionar(DTOMatricula pMatricula)
+        public async Task<DTOMatricula> Adicionar(DTOMatricula pMatricula)
         {
             Matricula lMAT = new Matricula()
             {
@@ -29,10 +30,14 @@ namespace GestorClassAPI.Models.Implementacoes
             };
 
             lContext.Matriculas.Add(lMAT);
-            lContext.SaveChanges();
+            await lContext.SaveChangesAsync();
+
+            pMatricula.Id = lMAT.Id;
+
+            return pMatricula;
         }
 
-        public void Atualizar(DTOMatricula pMatricula)
+        public async Task<DTOMatricula> Atualizar(DTOMatricula pMatricula)
         {
             Matricula lMAT = lContext.Matriculas.FirstOrDefault(p => p.Id == pMatricula.Id);
 
@@ -43,20 +48,22 @@ namespace GestorClassAPI.Models.Implementacoes
             lMAT.Data_Final = pMatricula.Data_Final;
             lMAT.Status = pMatricula.Status;
 
-            lContext.SaveChanges();
+           await lContext.SaveChangesAsync();
+
+            return pMatricula;
         }
 
-        public void Excluir(int Id)
+        public async Task Excluir(int Id)
         {
             Matricula lMAT = lContext.Matriculas.FirstOrDefault(p => p.Id == Id);
 
             lContext.Matriculas.Remove(lMAT);
-            lContext.SaveChanges();
+            await lContext.SaveChangesAsync();
         }
 
-        public DTOMatricula ObterPorCodigo(int Id)
+        public async Task<DTOMatricula> ObterPorCodigo(int Id)
         {
-            return (from MAT in lContext.Matriculas
+            return await (from MAT in lContext.Matriculas
                     where MAT.Id == Id
                     select new DTOMatricula
                     {
@@ -67,12 +74,12 @@ namespace GestorClassAPI.Models.Implementacoes
                         Data_Inicial = MAT.Data_Inicial,
                         Data_Final = MAT.Data_Final,
                         Status = MAT.Status
-                    }).FirstOrDefault();
+                    }).FirstOrDefaultAsync();
         }
 
-        public List<DTOMatricula> ObterTodos()
+        public async Task<List<DTOMatricula>> ObterTodos(int id)
         {
-            return lContext.Matriculas
+            return await lContext.Matriculas
                 .Select(p => new DTOMatricula
                 {
                     Id = p.Id,
@@ -82,7 +89,7 @@ namespace GestorClassAPI.Models.Implementacoes
                     Data_Inicial = p.Data_Inicial,
                     Data_Final = p.Data_Final,
                     Status = p.Status
-                }).ToList();
+                }).ToListAsync();
         }
     }
 }

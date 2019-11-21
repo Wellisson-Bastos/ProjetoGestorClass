@@ -6,10 +6,9 @@ namespace GestorClassAPI.Models.Interfaces
     public interface IServicoBase<Classe>
         where Classe : class
     {
-        void Adicionar(Classe obj);
-        void Atualizar(Classe obj);
-        void Excluir(int id);
-        Classe ObterPorCodigo(int id);
-        List<Classe> ObterTodos(int id);
+        Task<Classe> Adicionar(Classe obj);
+        Task<Classe> Atualizar(Classe obj);
+        Task Excluir(int id);
+        Task<Classe> ObterPorCodigo(int id);
     }
 }

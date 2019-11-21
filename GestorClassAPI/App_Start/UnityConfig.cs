@@ -44,6 +44,7 @@ namespace GestorClassAPI
             HttpConfiguration config = new HttpConfiguration();
 
             container.RegisterType<IServicoMatricula, ServicoMatricula>(new HierarchicalLifetimeManager());
+            container.RegisterType<IServicoAluno, ServicoAluno>(new HierarchicalLifetimeManager());
 
             GlobalConfiguration.Configuration.DependencyResolver = new UnityResolver(container);
         }
