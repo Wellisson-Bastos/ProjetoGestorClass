@@ -61,6 +61,7 @@ namespace GestorClassAPI.Models.Implementacoes
                           where ALU.Id == Id
                           select new DTOAluno
                           {
+                              Id = ALU.Id,
                               Nome = ALU.Nome,
                               Email = ALU.Email,
                               Data_Nascimento = ALU.Data_Nascimento
@@ -73,6 +74,7 @@ namespace GestorClassAPI.Models.Implementacoes
             return await lContext.Alunoes
                 .Select(p => new DTOAluno
                 {
+                    Id = p.Id,
                     Nome = p.Nome,
                     Email = p.Email,
                     Data_Nascimento = p.Data_Nascimento

@@ -20,7 +20,7 @@ namespace GestorClassAPI.Controllers
         [HttpGet]
         [ResponseType(typeof(List<DTOAluno>))]
         [Route("api/aluno/obtertodos")]
-        public async Task<IHttpActionResult> ObterTodos(int id)
+        public async Task<IHttpActionResult> ObterTodos()
         {
             try
             {

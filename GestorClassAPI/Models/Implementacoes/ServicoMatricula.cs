@@ -21,12 +21,14 @@ namespace GestorClassAPI.Models.Implementacoes
         {
             Matricula lMAT = new Matricula()
             {
+                Id = 2,
                 Curso = pMatricula.Curso,
                 Serie = pMatricula.Serie,
                 Turma = pMatricula.Turma,
                 Data_Inicial = pMatricula.Data_Inicial,
                 Data_Final = pMatricula.Data_Final,
-                Status = pMatricula.Status
+                Status = pMatricula.Status,
+                Id_Aluno = pMatricula.Id_Aluno
             };
 
             lContext.Matriculas.Add(lMAT);
@@ -73,13 +75,15 @@ namespace GestorClassAPI.Models.Implementacoes
                         Turma = MAT.Turma,
                         Data_Inicial = MAT.Data_Inicial,
                         Data_Final = MAT.Data_Final,
-                        Status = MAT.Status
+                        Status = MAT.Status,
+                        Id_Aluno = MAT.Id_Aluno
                     }).FirstOrDefaultAsync();
         }
 
         public async Task<List<DTOMatricula>> ObterTodos(int id)
         {
             return await lContext.Matriculas
+                .Where(p => p.Id_Aluno == id)
                 .Select(p => new DTOMatricula
                 {
                     Id = p.Id,
@@ -88,7 +92,8 @@ namespace GestorClassAPI.Models.Implementacoes
                     Turma = p.Turma,
                     Data_Inicial = p.Data_Inicial,
                     Data_Final = p.Data_Final,
-                    Status = p.Status
+                    Status = p.Status,
+                    Id_Aluno = p.Id_Aluno
                 }).ToListAsync();
         }
     }

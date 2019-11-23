@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GestorClassAPI.Models.DTO
 {
@@ -38,5 +37,10 @@ namespace GestorClassAPI.Models.DTO
         [StringLength(50, ErrorMessage = "O status da matrícula deve ter no máximo 50 caracteres.")]
         #endregion
         public string Status { get; set; }
+
+        #region DataAnnotations
+        [Required(ErrorMessage = "O código do aluno é requerido.")]
+        #endregion
+        public int Id_Aluno { get; set; }
     }
 }
